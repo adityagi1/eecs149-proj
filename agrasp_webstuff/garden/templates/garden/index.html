@@ -1,0 +1,11 @@
+{% extends "garden/layout.html" %}
+
+{% block content %}
+<h3 class="center-align light-green">{{title}}</h3>
+<ul class="collection">
+    {% for garden in gardens %}
+        <li class="collection-item">Temperature = {{garden.temperature}},
+        Moisture = {{garden.moisture}}, Date = {{garden.created_at}}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
