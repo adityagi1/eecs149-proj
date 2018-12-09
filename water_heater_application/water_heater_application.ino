@@ -11,6 +11,8 @@ int relay = D0;
 //default setpoint temperature to 25 degrees celsius (room temperature)
 int set_temperature = 35;
 
+//I assume NO (normally open) connection on relay. 
+
 void setup() {
   Serial.begin(9600);
   pinMode(temp_sensor, INPUT);
