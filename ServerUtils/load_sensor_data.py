@@ -103,14 +103,14 @@ def on_connect(client, userdata, flags, rc):
 		print("Connection failed, with code=" + str(rc) + "\n")
 
 def on_message(client, userdata, msg):
-	print("message recieved")
 	topic = msg.topic
+	print("Recieved message on topic: " + topic)
 	m_decode = str(msg.payload.decode("utf-8", "ignore"))
 	json_in = json.loads(m_decode)
 	user = topic.split('/')[0]
 	try:
 		with open(schema_file, 'r+') as s:
-			print("begin validating")
+			print("Validating Recieved JSON")
 			schema = json.load(s)
 			validate(json_in, schema)
 			valid_json = True
@@ -118,11 +118,11 @@ def on_message(client, userdata, msg):
 		print("Could not open " + schema_file + "/n")
 	if(valid_json):
 		file_to_write = "sensor_data\\" + str(json_in["device_id"]) + "\\" + str(json_in["data"][0]["d_label"]) + ".csv"
-		print(file_to_write)
 		if check_header(json_in, file_to_write):
 			print("Checking Setpoint")
 			check_setpoint(json_in)
 			print("Parsing Data")
+			print("Writing sensor data to: " + file_to_write)
 			parse_data(json_in, file_to_write)
 		else:
 			print("Type of data provided did not match type in csv file")
@@ -131,14 +131,13 @@ def on_message(client, userdata, msg):
 	
 def main():
 	client = setup_client()
-	#while True:
-	client.loop_start()
-		#update_sub_list()
-	client.subscribe("tanner/1111/sensor/test")
-
+	while True:
+		client.loop_start()
+		update_sub_list()
+		client.subscribe(sub_list)
 		#r=client.subscribe(sub_list)
 		#print(r)
-	time.sleep(5)
-	client.loop_stop()
+		time.sleep(5)
+		client.loop_stop()
 		
 if __name__ == "__main__": main()
