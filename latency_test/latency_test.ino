@@ -74,7 +74,6 @@ void setup() {
     pubsubclient.subscribe("testing"); 
     Wire.begin(D1, D2); /* join i2c bus with SDA=D1 and SCL=D2 of NodeMCU */
     pinMode(A0, INPUT);
-    start_tickers();
 }
 
 void reconnect() {
@@ -93,7 +92,6 @@ void reconnect() {
       delay(5000);
     }
   }
-  start_tickers();
   ESP.wdtEnable(1000);
 }
 
