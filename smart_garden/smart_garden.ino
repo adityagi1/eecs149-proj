@@ -15,18 +15,12 @@ Ticker tick_soil_moisture_1;
 Ticker tick_soil_moisture_2;
 Ticker tick_water;
 Ticker tick_light;
+Ticker tick_heap;
 const size_t capacity = 2*JSON_OBJECT_SIZE(4) + 2*JSON_OBJECT_SIZE(2) + 2*JSON_ARRAY_SIZE(1);
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
-
   // Switch on the LED if an 1 was received as first character
+  char results[10];
   if ((char)payload[0] == '1') {
     digitalWrite(16, LOW);  
   } else {
@@ -47,6 +41,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
   } else {
     digitalWrite(12, LOW);  // Turn the PUMP2ing off by making the voltage LOW
   }
+  strncpy(results, (char*)payload, 8);
+  results[8] = '\0'; 
+  publish_data("", "setpoints", "", results);
 }
 
 void setup() {
@@ -69,43 +66,37 @@ void setup() {
     //wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
     wifiManager.autoConnect("AutoConnectAP");
     //if you get here you have connected to the WiFi
-    Serial.println("connected...yeey :)");
     pubsubclient.setServer("agrasp.wifizone.org", 80);
     pubsubclient.connect("testing");
     pubsubclient.setCallback(callback);
     pubsubclient.subscribe("testing"); 
     Wire.begin(D1, D2); /* join i2c bus with SDA=D1 and SCL=D2 of NodeMCU */
     pinMode(A0, INPUT);
-  tick_temp.attach(5, temp);
-  tick_water.attach(5, water_level);
-  tick_soil_moisture_1.attach(5, soil_moisture_1);
-  tick_soil_moisture_2.attach(5, soil_moisture_2);
-  tick_light.attach(10, light);
-    
+    start_tickers();
 }
 
 void reconnect() {
   // Loop until we're reconnected
+  stop_tickers();
+  ESP.wdtDisable();
   while (!pubsubclient.connected()) {
-    Serial.print("Attempting MQTT connection...");
+    Serial.println("not connected");
     // Attempt to connect
     if (pubsubclient.connect("testing")) {
-      Serial.println("connected");
       // Once connected, publish an announcement...
-      pubsubclient.publish("test", "hello world");
+      publish_data("wifi", "", "reconnected", "");
       pubsubclient.subscribe("testing");
       // ... and resubscribe
     } else {
-      Serial.print("failed, rc=");
-      Serial.print(pubsubclient.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
       delay(5000);
     }
   }
+  start_tickers();
+  ESP.wdtEnable(1000);
 }
 
 void publish_data(char* data_name, char* setpoint_name, char* datapt, char* setpt) {
+  ESP.wdtDisable();
   StaticJsonBuffer<capacity> jsonBuffer;
   JsonObject& obj = jsonBuffer.createObject();
   obj["device_id"] = "9e1fc51deb46bff3";
@@ -128,9 +119,9 @@ void publish_data(char* data_name, char* setpoint_name, char* datapt, char* setp
   
   char JSBuffer[256];
   obj.printTo(JSBuffer);
-  Serial.println(JSBuffer);
   pubsubclient.publish("test", JSBuffer);
   pubsubclient.loop();
+  ESP.wdtEnable(1000);
   ESP.wdtFeed();
 
 }
@@ -146,9 +137,9 @@ void soil_moisture_1() {
     soil2 |= Wire.read() << 8;
   }
   char soil[10];
-  itoa(soil1, soil, 5);
+  itoa(soil1, soil, 10);
   char pump[5];
-  itoa(1 & digitalRead(D6), pump, 2);
+  itoa(1 & digitalRead(D6), pump, 10);
   publish_data("soil_1", "pump_1", soil, pump);
 }
 
@@ -163,16 +154,34 @@ void soil_moisture_2() {
     soil2 |= Wire.read() << 8;
   }
   char soil[10];
-  itoa(soil2, soil, 5);
+  itoa(soil2, soil, 10);
   char pump[5];
-  itoa(1 & digitalRead(D7), pump, 2);
+  itoa(1 & digitalRead(D7), pump, 10);
   publish_data("soil_2", "pump_2", soil, pump);
 }
 
 void light() {
   char light[5];
-  itoa(1 & digitalRead(D5), light, 2);
+  itoa(1 & digitalRead(D5), light, 10);
   publish_data("", "light", "", light); 
+}
+
+void stop_tickers() {
+  tick_temp.detach();
+  tick_water.detach();
+  tick_soil_moisture_1.detach();
+  tick_soil_moisture_2.detach();
+  tick_light.detach();
+  tick_heap.detach();
+}
+
+void start_tickers() {
+  tick_temp.attach(5, temp);
+  tick_water.attach(5, water_level);
+  tick_soil_moisture_1.attach(5, soil_moisture_1);
+  tick_soil_moisture_2.attach(5, soil_moisture_2);
+  tick_light.attach(10, light);
+  tick_heap.attach(10, heap_space);
 }
 
 
@@ -193,14 +202,23 @@ void water_level() {
 
 void temp() {
   int temp_val = analogRead(A0);
-  Serial.println(temp_val);
   float temperature = ((temp_val * (3300.0/1024)) - 500) / 10;
   char temp[10 + 2];
   dtostrf(temperature, 9, 5, temp);
   publish_data("temp", "", temp, "");
 }
 
+void heap_space() {
+  int heap_space = ESP.getFreeHeap();
+  char heap_char[14];
+  itoa(heap_space, heap_char, 10);
+  publish_data("heap", "", heap_char, "");
+}
+
 void loop() {
   ESP.wdtFeed();
+  if (!pubsubclient.connected()) {
+    reconnect();
+  }
   pubsubclient.loop();
 }
