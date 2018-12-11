@@ -40,5 +40,19 @@
 				}
 			}
 		}
+		"set_pt": {
+			"type": "object",
+			"required": [ "d_label", "d_value" ],
+			"properties": {
+			    "d_label": {
+				    "type": "string",
+                    "description": "Type of data"
+				},
+				"d_value": {
+				    "type": "number",
+					"description": "Data value"
+				}
+			}
+		}
 	}
 }
