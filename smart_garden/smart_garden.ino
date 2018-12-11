@@ -125,7 +125,6 @@ void publish_data(char* data_name, char* setpoint_name, char* datapt, char* setp
   pubsubclient.loop();
   ESP.wdtEnable(1000);
   ESP.wdtFeed();
-
 }
 
 void soil_moisture_1() {
@@ -139,7 +138,9 @@ void soil_moisture_1() {
     soil2 |= Wire.read() << 8;
   }
   char soil[10];
-  itoa(soil1, soil, 10);
+//  itoa(soil1, soil, 10);
+  float soil_float = soil1 * 1 / 10.24;
+  dtostrf(soil_float, 7, 4, soil);
   char pump[5];
   itoa(1 & digitalRead(D6), pump, 10);
   publish_data("soil_1", "pump_1", soil, pump);
@@ -156,7 +157,9 @@ void soil_moisture_2() {
     soil2 |= Wire.read() << 8;
   }
   char soil[10];
-  itoa(soil2, soil, 10);
+//  itoa(soil2, soil, 10);
+  float soil_float = soil2 * 1 / 10.24;
+  dtostrf(soil_float, 7, 4, soil);
   char pump[5];
   itoa(1 & digitalRead(D7), pump, 10);
   publish_data("soil_2", "pump_2", soil, pump);
@@ -197,8 +200,9 @@ void water_level() {
     num |= Wire.read() << 24;
   }
   float capacitance = 1.44 * 1000000000 / (180000*3.0*num);
+  float y = (capacitance - 0.0797) * (100.0) / (0.1125 - 0.0797);
   char cap[10 + 2];
-  dtostrf(capacitance, 6, 4, cap);
+  dtostrf(y, 7, 3, cap);
   publish_data("water", "", cap, "");
 }
 
@@ -206,7 +210,7 @@ void temp() {
   int temp_val = analogRead(A0);
   float temperature = ((temp_val * (3300.0/1024)) - 500) / 10;
   char temp[10 + 2];
-  dtostrf(temperature, 9, 5, temp);
+  dtostrf(temperature * 0.6, 9, 5, temp);
   publish_data("temp", "", temp, "");
 }
 
