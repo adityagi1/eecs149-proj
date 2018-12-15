@@ -1,0 +1,25 @@
+GRASP : Generalizable Remote Actuation & Sensing of a Process is a framework designed by UC Berkeley Embedded Systems students 
+that employs remote networking, feedback control, and sensing & actuation to supervise & control a process over the Internet. 
+This idea is realized by demonstrating GRASP's operation in two different, but related areas: Smart Gardening & Smart Homes.
+
+
+SMART GARDENING: IS GARDENING YOUR PLANTS TOO TIME CONSUMING? WOULD YOU LIKE TO GO SHOPPING INSTEAD? GRASP OVER PHONE IS THE ANSWER!
+ACTUATION:
+Control the light received by your plants, remotely water the plants, etc.
+
+SENSING:
+You can view in pseudo-real time the current temperature of the plants, and the moisture level of the soil. You may also visualize past 
+results in the form of a auto-generated plot. 
+
+
+SMART HOMES: WANT TO COME HOME TO A SOME FRESHLY BOILED EGGS AFTER A BUSY DAY AT WORK? WHAT ABOUT A WARM SHOWER AS SOON AS YOU STEP IN? WARM SOUP?
+
+ACTUATION:
+Set the temperature of your application remotely, and let GRASP locally handle the details of maintaining your set temperature.
+
+SENSING:
+View the current temperature, the set temperature, and visulization of past temperature changes over time. GRASP provides the visualizations! 
+
+
+
+
