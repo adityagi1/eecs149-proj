@@ -1,0 +1,44 @@
+{
+    "$id": "https://agrasp.wifizone.org",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Device Data Out",
+	"description": "A representation of Data being sent from an IoT device",
+	"required": [ "device_id", "device_type", "data", "setpoint" ],
+	"type": "object",
+	"properties": {
+	    "device_id": {
+            "type": "string",
+		    "description": "Unique, random 64b device ID"
+		},
+		"device_type": {
+		    "type": "string",
+			"description": "Type of device"
+		},
+		"data": {
+		    "type": "array",
+			"description": "Data out of the device",
+			"items": { "$ref": "#/definitions/data_pt" }
+		},
+		"setpoint": {
+		    "type": "array",
+			"description": "Setpoint of the device",
+			"items": { "$ref": "#/definitions/data_pt" }
+		}
+	},
+	"definitions": {
+	    "data_pt": {
+			"type": "object",
+			"required": [ "d_label", "d_value" ],
+			"properties": {
+			    "d_label": {
+				    "type": "string",
+                    "description": "Type of data"
+				},
+				"d_value": {
+				    "type": "number",
+					"description": "Data value"
+				}
+			}
+		}
+	}
+}

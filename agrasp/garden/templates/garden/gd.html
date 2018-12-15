@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content ="width=device.width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content = "ie-edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>Smart Gardening</title>
+    <style>
+        .button {
+  background-color: #4CAF50; /* Green background */
+            border: 1px solid green; /* Green border */
+            color: white; /* White text */
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            width: 50%; /* Set a width if needed */
+            display: block; /* Make the buttons appear below each other */
+}
+        .btn-group button {
+            background-color: #4CAF50; /* Green background */
+            border: 1px solid green; /* Green border */
+            color: white; /* White text */
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            width: 50%; /* Set a width if needed */
+	    margin: auto;
+            display: block; /* Make the buttons appear below each other */
+        }
+
+        .btn-group button:not(:last-child) {
+            border-bottom: none; /* Prevent double borders */
+            text-align: center;
+	    margin: auto;
+        }
+
+        /* Add a background color on hover */
+        .btn-group button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <header class="container center-align">
+        <h1>GRASP</h1>
+    </header>
+
+    <div class="container">
+	<h3 class="center-align light-green">Smart Gardening</h3>
+        	<li class="collection-item">Most Recent: Temperature Reading = {{tempL.data}} C,
+        		Moisture Reading for Plant 1 = {{soil1.data}}%, Moisture Reading for Plant 2 = {{soil2.data}}%,
+			Water Level Reading = {{water.data}}% 
+			{% if state.lights %}
+				Lights ON
+			{% else %}
+				Lights OFF
+			{% endif %}
+			{% if state.pump_1 %} 
+                                Pump 1 ON 
+                        {% else %} 
+                                Pump 1 OFF 
+                        {% endif %}
+			{% if state.pump_2 %} 
+                                Pump 2 ON 
+                        {% else %} 
+                                Pump 2 OFF 
+                        {% endif %} </li>
+	</ul>
+    </div>
+    <div class="btn-group" style="text-align: center;">
+	<a href="{% url 'simple' %}"><button>View Temperature History</button></a>
+        <a href="{% url 'soil' %}"><button>View Soil Moisture for Plant 1</button></a>
+        <a href="{% url 'soil2' %}"><button>View Soil Moisture for Plant 2</button></a>
+	<a href="{% url 'lights_on' %}"><button>Light Switch</button></a>
+        <a href="{% url 'switch_p1' %}"><button>Pump 1 Switch</button></a>
+        <a href="{% url 'switch_p2' %}"><button>Pump 2 Switch</button></a>
+        <p>SMART GARDENING: IS GARDENING YOUR PLANTS TOO TIME CONSUMING? WOULD YOU LIKE TO GO SHOPPING INSTEAD? GRASP OVER PHONE IS THE ANSWER!</p>
+	<p>ACTUATION: Control the light received by your plants, remotely water the plants, etc.</p>
+        <p>SENSING:You can view in pseudo-real time the current temperature of the plants, and the moisture level of the soil. You may also visualize past results in the form of an auto-generated plot.</p>
+    </div>
+</body>
+</html>
+
+
+

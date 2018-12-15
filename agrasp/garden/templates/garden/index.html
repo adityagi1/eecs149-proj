@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content ="width=device.width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content = "ie-edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>Applications</title>
+    <style>
+        .button {
+  background-color: #4CAF50; /* Green background */
+            border: 1px solid green; /* Green border */
+            color: white; /* White text */
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            width: 50%; /* Set a width if needed */
+            display: block; /* Make the buttons appear below each other */
+}
+        .btn-group button {
+            background-color: #4CAF50; /* Green background */
+            border: 1px solid green; /* Green border */
+            color: white; /* White text */
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            width: 50%; /* Set a width if needed */
+            display: block; /* Make the buttons appear below each other */
+            margin: auto;
+        }
+
+        .btn-group button:not(:last-child) {
+            border-bottom: none; /* Prevent double borders */
+	    margin: auto;
+        }
+
+        /* Add a background color on hover */
+        .btn-group button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+    <!--<script type="text/javascript" >window.setTimeout(function () {
+    location.href = "http://localhost:8000/garden/";
+}, 500);</script>-->
+</head>
+<body>
+    <header class="container center-align">
+        <h1>GRASP Applications</h1>
+    </header>
+
+    <div class="btn-group" style="text-align: center;">
+<a href="{% url 'gard' %}"><button>Smart Gardening</button></a>
+<a href="{% url 'heater' %}"><button>Smart Home</button></a>
+<p>GRASP : Generalizable Remote Actuation & Sensing of a Process is a framework designed by UC Berkeley Embedded Systems students 
+that employs remote networking, sensing, and actuation to supervise & control a process over the Internet. 
+This idea is realized by demonstrating GRASP's operation in two different, but related areas: Smart Gardening & Smart Homes.</p>
+    </div>
+    </div>
+</body>
+</html>
+
+
+
